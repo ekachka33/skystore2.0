@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skystore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3f3f3, #ffffff);
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar a {
+            color: white !important;
+        }
+        .card {
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+        }
+        footer a {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Skystore</a>
+        <div>
+            <a class="btn btn-outline-light" href="/">Каталог</a>
+            <a class="btn btn-outline-light" href="/contacts/">Контакты</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container text-center py-5">
+    <h1 class="display-4">Skystore</h1>
+    <p class="lead">Отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели продать.</p>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="my-0 font-weight-normal">Удобный сервис рассылок</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$140</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>- Неограниченная лицензия</li>
+                        <li>- Поддержка</li>
+                        <li>- Установка на сервер</li>
+                        <li>- Получение обновлений</li>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-primary">Купить</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="my-0 font-weight-normal">Телеграм боты</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$120</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>- Интуитивно понятный интерфейс</li>
+                        <li>- Поддержка 24/7</li>
+                        <li>- Легкая интеграция</li>
+                        <li>- Обновления</li>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-success">Купить</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="my-0 font-weight-normal">Веб-приложения</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$200</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>- Разработка под ключ</li>
+                        <li>- Кастомизация</li>
+                        <li>- Высокая производительность</li>
+                        <li>- Техническая поддержка</li>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-warning">Купить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center mt-5">
+    <div class="container">
+        <h5>SkyStore</h5>
+        <small class="d-block mb-3">&copy; 2023</small>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
