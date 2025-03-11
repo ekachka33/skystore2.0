@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.shortcuts import render
-
+from django.shortcuts import render
+from .models import Product
 
 def home(request):
-    return render(request, 'home.html')
-
+    latest_products = Product.objects.order_by('-created_at')[:5]  # Получаем последние 5 продуктов
+    return render(request, 'home.html', {'latest_products': latest_products})
 
 def contacts(request):
     if request.method == "POST":

@@ -48,58 +48,26 @@
 </div>
 
 <div class="container">
+    <h2 class="text-center">Последние продукты</h2>
     <div class="row text-center">
+        {% for product in latest_products %}
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="my-0 font-weight-normal">Удобный сервис рассылок</h4>
+                    <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">$140</h1>
+                    <h1 class="card-title pricing-card-title">{{ product.price }}₽</h1>
+                    <p>{{ product.description }}</p>
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Неограниченная лицензия</li>
-                        <li>- Поддержка</li>
-                        <li>- Установка на сервер</li>
-                        <li>- Получение обновлений</li>
+                        <li>- Примерный список особенностей продукта</li>
+                        <li>- Другие характеристики</li>
                     </ul>
                     <button type="button" class="btn btn-lg btn-primary">Купить</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="my-0 font-weight-normal">Телеграм боты</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">$120</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Интуитивно понятный интерфейс</li>
-                        <li>- Поддержка 24/7</li>
-                        <li>- Легкая интеграция</li>
-                        <li>- Обновления</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-success">Купить</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="my-0 font-weight-normal">Веб-приложения</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">$200</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Разработка под ключ</li>
-                        <li>- Кастомизация</li>
-                        <li>- Высокая производительность</li>
-                        <li>- Техническая поддержка</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-warning">Купить</button>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
