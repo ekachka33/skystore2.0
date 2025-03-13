@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% load static %}  <!-- Загрузка тегов статических файлов -->
+{% extends 'catalog/base.html' %}
+{% load static %}
 
 {% block title %}Контакты - Catalog{% endblock %}
 
@@ -8,6 +8,17 @@
     <h1 class="display-4">Контакты</h1>
     <p class="lead">Свяжитесь с нами удобным для вас способом.</p>
 </div>
+
+<!-- Отображение сообщений -->
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <div class="container">
     <div class="row">
