@@ -8,7 +8,7 @@ class Category(models.Model):
         return self.name
 
 class Contact(models.Model):
-    name = models.CharField(max_length=255)  # Исправлено
+    name = models.CharField(max_length=255)
     email = models.EmailField()
     message = models.TextField()
 

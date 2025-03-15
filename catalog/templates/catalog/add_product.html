@@ -5,9 +5,13 @@
 {% block content %}
 <div class="container">
     <h1>Добавить новый товар</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        {{ form.non_field_errors }}  <!-- Отображение ошибок, не связанных с конкретным полем -->
+
+        {{ form.as_p }}  <!-- Отображение полей формы -->
+
         <button type="submit" class="btn btn-primary">Добавить товар</button>
     </form>
 </div>

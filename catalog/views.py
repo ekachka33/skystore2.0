@@ -1,3 +1,4 @@
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
@@ -18,10 +19,9 @@ class ContactsView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         name = request.POST.get("name")
-        phone = request.POST.get("phone")
+        email = request.POST.get("email")
         message = request.POST.get("message")
 
-        # Здесь можно добавить сохранение данных в БД или отправку email
 
         # Сообщение об успешной отправке
         messages.success(request, f"Спасибо, {name}! Ваше сообщение отправлено.")

@@ -9,17 +9,6 @@
     <p class="lead">Свяжитесь с нами удобным для вас способом.</p>
 </div>
 
-<!-- Отображение сообщений -->
-{% if messages %}
-    <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
 <div class="container">
     <div class="row">
         <div class="col-lg-8">
@@ -49,15 +38,15 @@
                     <h4 class="my-0 font-weight-normal">Свяжитесь с нами</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="">
+                    <form method="post" action="{% url 'catalog:contacts' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="name" class="form-label">Имя</label>
                             <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Телефон</label>
-                            <input type="text" name="phone" class="form-control" id="phone" placeholder="Контактный телефон" required>
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="Ваш email" required>
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Сообщение</label>

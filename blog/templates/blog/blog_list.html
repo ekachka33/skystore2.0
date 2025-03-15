@@ -6,11 +6,13 @@
 {% block content %}
 <div class="container">
     <h1>Список блогов</h1>
-    <ul>
+    <ul class="list-group mb-3">
         {% for post in object_list %}
-            <li>
+            <li class="list-group-item">
                 <a href="{% url 'blog:blog_detail' post.pk %}">{{ post.title }}</a>
             </li>
+        {% empty %}
+            <li class="list-group-item">Нет доступных блогов.</li>
         {% endfor %}
     </ul>
     <a href="{% url 'blog:blog_create' %}" class="btn btn-primary">Добавить новый блог</a>

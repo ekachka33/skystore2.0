@@ -1,4 +1,5 @@
 {% extends 'catalog/base.html' %}
+{% load static %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -6,11 +7,12 @@
 <div class="container py-5">
     <h1>{{ product.name }}</h1>
     {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-4">
     {% else %}
-        <img src="/static/default-image.jpg" alt="Нет изображения" class="img-fluid">
+        <img src="{% static 'default-image.jpg' %}" alt="Нет изображения" class="img-fluid mb-4">
     {% endif %}
     <p>{{ product.description }}</p>
-    <h2>{{ product.price }}₽</h2>
+    <h2 class="mt-4">{{ product.price }}₽</h2>
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary mt-3">Назад к списку товаров</a>
 </div>
 {% endblock %}

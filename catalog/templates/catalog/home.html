@@ -26,15 +26,19 @@
                 </div>
                 <div class="card-body">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">
                     {% else %}
-                        <img src="{% static 'default-image.jpg' %}" alt="Нет изображения" class="img-fluid">
+                        <img src="{% static 'default-image.jpg' %}" alt="Нет изображения" class="img-fluid mb-3">
                     {% endif %}
                     <h1 class="card-title pricing-card-title">{{ product.price }}₽</h1>
                     <p>{{ product.description|truncatechars:100 }}</p>
                     <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-lg btn-primary">Подробнее</a>
                 </div>
             </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>Нет доступных продуктов.</p>
         </div>
         {% endfor %}
     </div>

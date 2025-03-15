@@ -1,28 +1,37 @@
 {% extends 'catalog/base.html' %}
+{% load static %}
+
 
 {% block title %}Список товаров{% endblock %}
 
 {% block content %}
 <div class="container">
     <h1>Список товаров</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Название</th>
-                <th>Описание</th>
-                <th>Цена</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in page_obj %}
-            <tr>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>{{ product.price }}₽</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="row">
+        {% for product in page_obj %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">
+                    {% else %}
+                        <img src="{% static 'default-image.jpg' %}" alt="Нет изображения" class="img-fluid mb-3">
+                    {% endif %}
+                    <h1 class="card-title pricing-card-title">{{ product.price }}₽</h1>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-lg btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>Нет доступных продуктов.</p>
+        </div>
+        {% endfor %}
+    </div>
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}
