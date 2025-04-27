@@ -1,4 +1,3 @@
-
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
@@ -22,7 +21,6 @@ class ContactsView(TemplateView):
         email = request.POST.get("email")
         message = request.POST.get("message")
 
-
         # Сообщение об успешной отправке
         messages.success(request, f"Спасибо, {name}! Ваше сообщение отправлено.")
         return redirect('catalog:contacts')  # Перенаправление на страницу контактов
@@ -41,6 +39,10 @@ class AddProductView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Товар успешно добавлен!")  # Сообщение об успешном добавлении
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Ошибка при добавлении товара. Пожалуйста, проверьте введенные данные.")  # Сообщение об ошибке
+        return super().form_invalid(form)
 
 class ProductListView(ListView):
     model = Product
