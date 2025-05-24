@@ -14,11 +14,24 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav">
+                <div class="navbar-nav me-auto"> {# Добавил me-auto для выравнивания влево #}
                     <a class="nav-link" href="/">Каталог</a>
                     <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
                     <a class="nav-link" href="{% url 'catalog:add_product' %}">Добавить товар</a>
                     <a class="nav-link" href="{% url 'blog:blog_list' %}">Перейти к блогу</a>
+                </div>
+                <div class="navbar-nav"> {# Новый div для кнопок пользователя #}
+                {% if user.is_authenticated %}
+                    <span class="nav-link text-white">Привет, {{ user.email }}!</span>
+                    <a class="nav-link" href="{% url 'users:profile_edit' %}">Редактировать профиль</a> {# <--- ДОБАВЬ ЭТУ ССЫЛКУ #}
+                    <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link text-white" style="text-decoration: none; padding: 0;">Выйти</button>
+                </form>
+            {% else %}
+                    <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
+                    <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+            {% endif %}
                 </div>
             </div>
         </div>

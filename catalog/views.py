@@ -1,9 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin # <--- Эту строку нужно добавить!
+
 from .models import Product
 from .forms import ProductForm
-from django.urls import reverse_lazy
+
 
 class HomeView(ListView):
     model = Product
@@ -11,7 +14,8 @@ class HomeView(ListView):
     context_object_name = 'latest_products'
 
     def get_queryset(self):
-        return Product.objects.order_by('-created_at')[:5]  # Получаем последние 5 продуктов
+        return Product.objects.order_by('-created_at')[:5]
+
 
 class ContactsView(TemplateView):
     template_name = 'catalog/contacts.html'
@@ -21,30 +25,33 @@ class ContactsView(TemplateView):
         email = request.POST.get("email")
         message = request.POST.get("message")
 
-        # Сообщение об успешной отправке
         messages.success(request, f"Спасибо, {name}! Ваше сообщение отправлено.")
-        return redirect('catalog:contacts')  # Перенаправление на страницу контактов
+        return redirect('catalog:contacts')
+
 
 class ProductDetailView(DetailView):
+    # Если на этой странице нет действий по изменению данных, то она может быть общедоступной.
+    # Если на ней есть кнопки "Редактировать", "Удалить" и т.п., то логично ее тоже защитить.
+    # Для целей задания, пока оставим её общедоступной, как "просмотр деталей"
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
-class AddProductView(CreateView):
+class AddProductView(LoginRequiredMixin, CreateView): # <--- ВОТ ЗДЕСЬ ДОБАВЬ LoginRequiredMixin!
     model = Product
     form_class = ProductForm
     template_name = 'catalog/add_product.html'
-    success_url = reverse_lazy('catalog:product_list')  # Перенаправление на список товаров
+    success_url = reverse_lazy('catalog:product_list')
 
     def form_valid(self, form):
-        messages.success(self.request, "Товар успешно добавлен!")  # Сообщение об успешном добавлении
+        messages.success(self.request, "Товар успешно добавлен!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Ошибка при добавлении товара. Пожалуйста, проверьте введенные данные.")  # Сообщение об ошибке
+        messages.error(self.request, "Ошибка при добавлении товара. Пожалуйста, проверьте введенные данные.")
         return super().form_invalid(form)
 
-class ProductListView(ListView):
+class ProductListView(ListView): # Это представление остается общедоступным
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'page_obj'
