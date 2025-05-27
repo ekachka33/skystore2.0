@@ -1,0 +1,46 @@
+{# catalog/templates/catalog/products_by_category.html #}
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Продукты{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">
+        {% if category %}
+            Продукты в категории "{{ category.name }}"
+        {% else %}
+            Все продукты
+        {% endif %}
+    </h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'default-image.jpg' %}" class="card-img-top" alt="Нет изображения" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text text-muted">Категория: {{ product.category.name }}</p>
+                    <h4 class="card-text text-primary">{{ product.price }}₽</h4>
+                    <a href="{% url 'catalog:product_detail' pk=product.pk %}" class="btn btn-primary mt-2">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="alert alert-info">В этой категории пока нет продуктов.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary mt-5">Вернуться ко всем продуктам</a>
+</div>
+{% endblock %}

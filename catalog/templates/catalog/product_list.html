@@ -1,3 +1,4 @@
+{# catalog/templates/catalog/product_list.html #}
 {% extends 'catalog/base.html' %}
 {% load static %}
 
@@ -7,6 +8,23 @@
 {% block content %}
 <div class="container">
     <h1>Список товаров</h1>
+
+    {# Блок для фильтрации по категориям - ДОБАВЛЕН ДЛЯ ТЕСТИРОВАНИЯ #}
+    <div class="mb-4">
+        <h3>Фильтр по категориям:</h3>
+        <ul class="list-group list-group-horizontal flex-wrap"> {# Используем Bootstrap для горизонтального списка #}
+            <li class="list-group-item"><a href="{% url 'catalog:product_list' %}" class="text-decoration-none">Все продукты</a></li>
+            {% for category in categories %} {# Здесь мы используем переменную 'categories' #}
+            <li class="list-group-item">
+                <a href="{% url 'catalog:products_by_category' pk=category.pk %}" class="text-decoration-none">{{ category.name }}</a>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted">Категорий пока нет. Добавьте их в админке!</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {# КОНЕЦ БЛОКА ДЛЯ ТЕСТИРОВАНИЯ #}
+
     <div class="row">
         {% for product in page_obj %}
         <div class="col-md-4">
@@ -22,6 +40,7 @@
                     {% endif %}
                     <h1 class="card-title pricing-card-title">{{ product.price }}₽</h1>
                     <p>{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text text-muted">Категория: {{ product.category.name }}</p> {# Добавил отображение категории здесь #}
                     <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-lg btn-primary">Подробнее</a>
                 </div>
             </div>

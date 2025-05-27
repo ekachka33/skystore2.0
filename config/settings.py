@@ -139,3 +139,22 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_REDIRECT_URL = '/catalog/'
 LOGOUT_REDIRECT_URL = '/users/login/'
 LOGIN_URL = '/users/login/'
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100
+            }
+
+        },
+        'KEY_PREFIX': 'skystore_cache', # Префикс для всех ключей кеша в этом проекте
+        'TIMEOUT': 300, # Время жизни кеша по умолчанию в секундах (5 минут)
+    }
+}
+
+CACHE_ENABLED = True
