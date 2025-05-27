@@ -16,11 +16,7 @@ class RegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'placeholder': 'Введите ваш email'})
-        # Удаляем поле username, так как мы используем email для авторизации
-        # Убедимся, что оно существует перед удалением, чтобы избежать ошибок,
-        # если базовый класс UserCreationForm изменится.
-        if 'username' in self.fields:
-            del self.fields['username']
+
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -31,7 +27,7 @@ class RegisterForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.username = user.email # Присваиваем email в качестве username, чтобы AbstractUser мог работать
+
         if commit:
             user.save()
         return user
@@ -56,8 +52,7 @@ class UserProfileForm(forms.ModelForm):
             elif field_name == 'avatar':
                 self.fields[field_name].widget.attrs['class'] = 'form-control-file' # Специальный класс для файлов
 
-        # Поле email должно быть заблокировано для редактирования, если это не требуется,
-        # или обрабатываться по-особому. Но для данного задания оставим его редактируемым.
+
 
     def clean_email(self):
         email = self.cleaned_data['email']
