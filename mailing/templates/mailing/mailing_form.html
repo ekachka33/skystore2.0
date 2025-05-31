@@ -1,0 +1,83 @@
+{# mailing/templates/mailing/mailing_form.html #}
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if object %}Редактировать рассылку{% else %}Создать рассылку{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">
+        {% if object %}Редактировать рассылку{% else %}Создать новую рассылку{% endif %}
+    </h1>
+
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Пожалуйста, исправьте следующие ошибки:
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {# Отображаем поля по отдельности для лучшего контроля #}
+        <div class="mb-3">
+            <label for="{{ form.first_send_time.id_for_label }}" class="form-label">Дата и время первой отправки:</label>
+            {{ form.first_send_time }}
+            {% if form.first_send_time.errors %}
+                <div class="text-danger small">{{ form.first_send_time.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.end_time.id_for_label }}" class="form-label">Дата и время окончания отправки:</label>
+            {{ form.end_time }}
+            {% if form.end_time.errors %}
+                <div class="text-danger small">{{ form.end_time.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.message.id_for_label }}" class="form-label">Сообщение:</label>
+            {{ form.message }}
+            {% if form.message.errors %}
+                <div class="text-danger small">{{ form.message.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Получатели:</label>
+            <div class="row"> {# Используем Bootstrap Grid для лучшей компоновки чекбоксов #}
+                {% for checkbox in form.recipients %}
+                <div class="col-md-6 col-lg-4"> {# Каждый чекбокс в отдельной колонке #}
+                    <div class="form-check">
+                        {{ checkbox.tag }} {# Сам чекбокс #}
+                        <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+                            {{ checkbox.choice_label }} {# Метка (текст) для чекбокса #}
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if form.recipients.errors %}
+                <div class="text-danger small">{{ form.recipients.errors }}</div>
+            {% endif %}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary mt-3">
+            {% if object %}Сохранить изменения{% else %}Создать{% endif %}
+        </button>
+        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary mt-3 ms-2">Отмена</a>
+    </form>
+
+</div>
+{% endblock %}

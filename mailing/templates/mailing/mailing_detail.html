@@ -1,0 +1,58 @@
+{# mailing/templates/mailing/mailing_detail.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Рассылка: {{ mailing.message.subject|default:"Без темы" }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Детали рассылки: {{ mailing.message.subject|default:"Без темы" }}</h1>
+    <p class="lead">Статус: {{ mailing.get_status_display }}</p>
+    <p class="lead">Начало отправки: {{ mailing.first_send_time|date:"d M Y H:i" }}</p>
+    <p class="lead">Окончание отправки: {{ mailing.end_time|date:"d M Y H:i" }}</p>
+    <p class="lead">Сообщение: <a href="{% url 'mailing:message_detail' pk=mailing.message.pk %}">{{ mailing.message.subject }}</a></p>
+
+    <h3 class="mt-4">Получатели:</h3>
+    {% if mailing.recipients.all %}
+        <ul class="list-group mb-4">
+            {% for recipient in mailing.recipients.all %}
+                <li class="list-group-item">
+                    <a href="{% url 'mailing:client_detail' pk=recipient.pk %}">{{ recipient.full_name }} ({{ recipient.email }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Получатели не выбраны.</p>
+    {% endif %}
+
+    <p class="text-muted">Владелец: {{ mailing.owner.email }}</p>
+
+    <div class="mt-4">
+        <a href="{% url 'mailing:mailing_update' pk=mailing.pk %}" class="btn btn-warning me-2">Редактировать</a>
+        <a href="{% url 'mailing:mailing_delete' pk=mailing.pk %}" class="btn btn-danger">Удалить</a>
+
+        {# Кнопка "Отправить сейчас" - доступна только владельцу рассылки #}
+        {% if user.is_authenticated and user == mailing.owner %}
+            <form action="{% url 'mailing:mailing_send' pk=mailing.pk %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success ms-2">Отправить сейчас</button>
+            </form>
+        {% endif %}
+
+        {# Кнопка "Приостановить / Возобновить" - только для менеджеров #}
+        {% if user.is_staff %} {# Если пользователь - сотрудник #}
+            {% if mailing.status == 'completed' %} {# Завершенные не трогаем #}
+                <button type="button" class="btn btn-secondary ms-2" disabled>Рассылка завершена</button>
+            {% else %}
+                <form action="{% url 'mailing:mailing_toggle_active' pk=mailing.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn ms-2 {% if mailing.status == 'paused' %}btn-primary{% else %}btn-secondary{% endif %}">
+                        {% if mailing.status == 'paused' %}Возобновить{% else %}Приостановить{% endif %}
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary ms-2">К списку рассылок</a>
+    </div>
+</div>
+{% endblock %}

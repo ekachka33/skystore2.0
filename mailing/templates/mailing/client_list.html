@@ -1,0 +1,41 @@
+{# mailing/templates/mailing/client_list.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Мои получатели рассылки{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Мои получатели рассылки</h1>
+    <a href="{% url 'mailing:client_create' %}" class="btn btn-primary mb-3">Добавить нового получателя</a>
+
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if clients %}
+    <div class="list-group">
+        {% for client in clients %}
+        <a href="{% url 'mailing:client_detail' pk=client.pk %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ client.full_name }} ({{ client.email }})</h5>
+                <small class="text-muted">Владелец: {{ client.owner.email }}</small>
+            </div>
+            <p class="mb-1">{{ client.comment|truncatechars:100 }}</p>
+            <div class="d-flex justify-content-end mt-2">
+                <a href="{% url 'mailing:client_update' pk=client.pk %}" class="btn btn-sm btn-outline-warning me-2">Редактировать</a>
+                <a href="{% url 'mailing:client_delete' pk=client.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        У вас пока нет получателей рассылки. Добавьте первого!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

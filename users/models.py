@@ -1,9 +1,9 @@
 # users/models.py
 
-from django.contrib.auth.models import AbstractUser, UserManager # <--- Добавляем UserManager
+from django.contrib.auth.models import AbstractUser, UserManager #
 from django.db import models
 
-class CustomUserManager(UserManager): # <--- НОВЫЙ КЛАСС МЕНЕДЖЕРА
+class CustomUserManager(UserManager):
     """
     Кастомный менеджер пользователей, который использует email как username
     для создания пользователя и суперпользователя.
@@ -42,12 +42,12 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name='Номер телефона')
     country = models.CharField(max_length=100, blank=True, null=True, verbose_name='Страна')
 
-    username = None # Удаляем поле username
+    username = None
 
-    USERNAME_FIELD = 'email'  # Устанавливаем email в качестве поля для авторизации
-    REQUIRED_FIELDS = [] # Больше не требуется username
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-    objects = CustomUserManager() # <--- УКАЗЫВАЕМ НАШ КУСТОМНЫЙ МЕНЕДЖЕР
+    objects = CustomUserManager()
 
     class Meta:
         verbose_name = 'Пользователь'

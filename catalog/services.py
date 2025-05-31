@@ -9,26 +9,25 @@ def get_products_by_category(category_pk):
     Использует низкоуровневое кеширование.
     """
     if not category_pk:
-        return Product.objects.all() # Если категория не указана, возвращаем все продукты
+        return Product.objects.all()
 
-    # Генерируем ключ кеша. Важно, чтобы ключ был уникальным для каждой категории.
+    # Генерируем ключ кеша.
     cache_key = f'products_by_category_{category_pk}'
 
-    # Пытаемся получить данные из кеша
     products = cache.get(cache_key)
 
     if products is None:
-        # Если данных нет в кеше, получаем их из базы данных
+
         try:
             category = Category.objects.get(pk=category_pk)
             products = Product.objects.filter(category=category)
 
             cache.set(cache_key, products, 300)
-            print(f"Products for category {category_pk} fetched from DB and cached.") # Для отладки
+            print(f"Products for category {category_pk} fetched from DB and cached.")
         except Category.DoesNotExist:
-            products = Product.objects.none() # Если категория не найдена, возвращаем пустой QuerySet
-            print(f"Category {category_pk} not found. Returning empty queryset.") # Для отладки
+            products = Product.objects.none()
+            print(f"Category {category_pk} not found. Returning empty queryset.")
     else:
-        print(f"Products for category {category_pk} fetched from cache.") # Для отладки
+        print(f"Products for category {category_pk} fetched from cache.")
 
     return products

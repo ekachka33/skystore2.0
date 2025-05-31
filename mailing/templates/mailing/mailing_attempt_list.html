@@ -1,0 +1,84 @@
+{# mailing/templates/mailing/mailing_attempt_list.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Отчет по попыткам рассылок{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Отчет по попыткам рассылок</h1>
+
+    {# Блок общей статистики #}
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Всего попыток</h4>
+                <p class="display-4 text-primary">{{ total_attempts }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Успешных попыток</h4>
+                <p class="display-4 text-success">{{ successful_attempts }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Неудачных попыток</h4>
+                <p class="display-4 text-danger">{{ failed_attempts }}</p>
+            </div>
+        </div>
+    </div>
+
+    {# Статистика по рассылкам (из HomeView, но для удобства тут) #}
+    <h2 class="mb-4">Общая статистика рассылок (ваша/все)</h2>
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Всего рассылок</h4>
+                <p class="display-4 text-secondary">{{ total_mailings_for_stats }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Активных рассылок</h4>
+                <p class="display-4 text-success">{{ active_mailings_for_stats }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Уникальных получателей</h4>
+                <p class="display-4 text-info">{{ unique_recipients_for_stats }}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <h2 class="mb-4">Список попыток</h2>
+    {% if attempts %}
+    <div class="list-group">
+        {% for attempt in attempts %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm
+            {% if attempt.status == 'success' %} list-group-item-success
+            {% elif attempt.status == 'failed' %} list-group-item-danger
+            {% endif %}">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    Рассылка: <a href="{% url 'mailing:mailing_detail' pk=attempt.mailing.pk %}">{{ attempt.mailing.message.subject|default:"Без темы" }}</a>
+                </h5>
+                <small>{{ attempt.attempt_time|date:"d M Y H:i" }}</small>
+            </div>
+            <p class="mb-1">Статус: <span class="badge {% if attempt.status == 'success' %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.get_status_display }}</span></p>
+            <p class="mb-1 text-muted">Ответ сервера: {{ attempt.server_response|default:"-" }}</p>
+            <small class="text-muted">Владелец рассылки: {{ attempt.mailing.owner.email }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        Пока нет записей о попытках рассылок.
+    </div>
+    {% endif %}
+
+    <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary mt-5">Вернуться к рассылкам</a>
+</div>
+{% endblock %}

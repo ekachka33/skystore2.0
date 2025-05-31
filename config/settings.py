@@ -1,3 +1,7 @@
+# --- Установка SSL_CERT_FILE для решения проблем с сертификатами ---
+# Эта строка должна быть в самом начале файла settings.py
+# <--- ЭТА СТРОКА!
+# --- Конец установки SSL_CERT_FILE ---
 """
 Django settings for config project.
 
@@ -10,6 +14,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+import certifi
+os.environ['SSL_CERT_FILE'] = "/Users/vladislavkorobov/Desktop/skystore2.0/.venv/lib/python3.12/site-packages/certifi/cacert.pem"
 from pathlib import Path
 from decouple import config
 
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'blog',
     'catalog',
+    'mailing',
 ]
 
 MIDDLEWARE = [
@@ -112,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE ='Asia/Bangkok'
 
 USE_I18N = True
 
@@ -134,7 +141,16 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'users.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 LOGIN_REDIRECT_URL = '/catalog/'
 LOGOUT_REDIRECT_URL = '/users/login/'

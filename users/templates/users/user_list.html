@@ -1,0 +1,58 @@
+{# users/templates/users/user_list.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Список пользователей{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Список пользователей</h1>
+
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if users %}
+    <div class="list-group">
+        {% for user_obj in users %} {# user_obj, чтобы не конфликтовать с {{ user }} текущего пользователя #}
+        <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm
+            {% if not user_obj.is_active %} list-group-item-danger {% endif %}"> {# Подсвечиваем заблокированных #}
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ user_obj.email }}</h5>
+                <small class="text-muted">
+                    {% if user_obj.is_staff %} (Сотрудник){% endif %}
+                    {% if user_obj.is_superuser %} (Суперпользователь){% endif %}
+                </small>
+            </div>
+            <p class="mb-1">Статус:
+                <span class="badge {% if user_obj.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                    {% if user_obj.is_active %}Активен{% else %}Заблокирован{% endif %}
+                </span>
+            </p>
+            {% if user_obj.phone_number %}<p class="mb-1">Телефон: {{ user_obj.phone_number }}</p>{% endif %}
+            {% if user_obj.country %}<p class="mb-1">Страна: {{ user_obj.country }}</p>{% endif %}
+
+            <div class="d-flex justify-content-end mt-2">
+                {# Кнопка блокировки/разблокировки #}
+                {% if user.is_staff and user_obj != user %} {# Только staff и не сам себе #}
+                    <form action="{% url 'users:user_block' pk=user_obj.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if user_obj.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                            {% if user_obj.is_active %}Заблокировать{% else %}Разблокировать{% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        Пока нет пользователей.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

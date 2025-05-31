@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import BlogListView, BlogDetailView, BlogCreateView, BlogUpdateView
 
-app_name = 'blog'  # Убедитесь, что пространство имен задано
+app_name = 'blog'
 
 urlpatterns = [
     path('', BlogListView.as_view(), name='blog_list'),

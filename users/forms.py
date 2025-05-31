@@ -1,8 +1,9 @@
 # users/forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm # Оставим UserChangeForm, так как он используется в админке по умолчанию
 from .models import User
+
 
 class RegisterForm(UserCreationForm):
     """
@@ -17,17 +18,14 @@ class RegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'placeholder': 'Введите ваш email'})
 
-
     def clean_email(self):
         email = self.cleaned_data['email']
-        # При регистрации проверяем, что email не занят
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Пользователь с таким email уже существует.")
         return email
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
         if commit:
             user.save()
         return user
@@ -39,26 +37,19 @@ class UserProfileForm(forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ('email', 'avatar', 'phone_number', 'country') # Поля, которые можно редактировать
+        fields = ('email', 'avatar', 'phone_number', 'country')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Добавляем placeholder'ы и, возможно, стили для полей
         for field_name in self.fields:
-            # Аватар - это поле для загрузки файла, не нужно добавлять placeholder и class form-control к нему
-            if field_name not in ['avatar', 'password', 'password2']: # Убедимся, что и к паролям не применяем
+            if field_name not in ['avatar', 'password', 'password2']:
                 self.fields[field_name].widget.attrs['placeholder'] = self.fields[field_name].label
-                self.fields[field_name].widget.attrs['class'] = 'form-control' # Добавляем класс Bootstrap
+                self.fields[field_name].widget.attrs['class'] = 'form-control'
             elif field_name == 'avatar':
-                self.fields[field_name].widget.attrs['class'] = 'form-control-file' # Специальный класс для файлов
-
-
+                self.fields[field_name].widget.attrs['class'] = 'form-control-file'
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        # При редактировании профиля нужно убедиться, что новый email не занят
-        # другим пользователем (но может быть текущим пользователем)
-        # self.instance.pk - это ID текущего редактируемого пользователя
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Пользователь с таким email уже существует.")
         return email

@@ -1,25 +1,45 @@
-venv/
-.env
-
-# Игнорируем файлы, сгенерированные системой
+# Byte-code files
 *.pyc
 __pycache__/
-.DS_Store
-db.sqlite3
 
-# Игнорируем логи и временные файлы
-logs/
-*.log
-*.tmp
-
-# Игнорируем настройки IDE и редакторов
+# IDE-specific files
 .vscode/
 .idea/
-*.swp
-.venv
+*.iml
+*.ipr
+*.iws
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
 
-# Игнорируем файлы БД
-*.sqlite3
+# Environment variables
+.env
 
-# Игнорируем зависимости
-/node_modules/
+# Database
+db.sqlite3
+*.sqlite3-journal
+
+# Media files (user-uploaded content)
+/media/
+/media/*
+
+# Static files (collected by collectstatic)
+/static/
+/staticfiles/
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Django specific
+*.log
+local_settings.py
+
+# Any other temporary or unwanted files
+Invalidate
+Yes

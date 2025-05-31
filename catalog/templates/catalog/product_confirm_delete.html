@@ -1,0 +1,17 @@
+{# catalog/templates/catalog/product_confirm_delete.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Удалить продукт{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Удалить продукт</h1>
+    <p class="lead">Вы уверены, что хотите удалить продукт "{{ object.name }}"?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">Да, удалить</button>
+        <a href="{% url 'catalog:product_detail' pk=object.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

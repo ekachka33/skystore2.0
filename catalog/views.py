@@ -4,13 +4,15 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin # <--- УБЕДИСЬ, ЧТО ВСЕ МИКСИНЫ ИМПОРТИРОВАНЫ
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
-from .models import Product, Category # <--- Импортируем Category, если нужна для контекста
+from .models import Product, Category
 from .forms import ProductForm
-from .services import get_products_by_category # <--- Импортируем нашу сервисную функцию
+from .services import get_products_by_category # Используется для категорий
+
+from mailing.models import Mailing, Client # Для статистики на главной
 
 
 class HomeView(ListView):
@@ -20,6 +22,13 @@ class HomeView(ListView):
 
     def get_queryset(self):
         return Product.objects.order_by('-created_at')[:5]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_mailings'] = Mailing.objects.count()
+        context['active_mailings'] = Mailing.objects.filter(status=Mailing.STATUS_STARTED).count()
+        context['unique_recipients_count'] = Client.objects.count()
+        return context
 
 
 class ContactsView(TemplateView):
@@ -41,12 +50,14 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
 
 
-class AddProductView(LoginRequiredMixin, CreateView):
+class AddProductView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/add_product.html'
     success_url = reverse_lazy('catalog:product_list')
 
+    def test_func(self):
+        return self.request.user.is_staff
     def form_valid(self, form):
         form.instance.owner = self.request.user
         messages.success(self.request, "Товар успешно добавлен!")
@@ -65,11 +76,10 @@ class ProductListView(ListView):
     def get_queryset(self):
         return Product.objects.all()
 
-    def get_context_data(self, **kwargs): # <--- ДОБАВЬ ЭТОТ МЕТОД
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all() # Передаем список всех категорий
+        context['categories'] = Category.objects.all()
         return context
-
 
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -81,14 +91,6 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         obj = self.get_object()
         return obj.owner == self.request.user
-
-    def form_valid(self, form):
-        messages.success(self.request, "Товар успешно обновлен!")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Ошибка при обновлении товара. Проверьте данные.")
-        return super().form_invalid(form)
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -117,27 +119,22 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return redirect('catalog:product_detail', pk=pk)
 
 
-class ProductByCategoryListView(ListView): # <--- НОВОЕ ПРЕДСТАВЛЕНИЕ!
-    """
-    Представление для отображения продуктов по выбранной категории.
-    """
+class ProductByCategoryListView(ListView):
     model = Product
-    template_name = 'catalog/products_by_category.html' # Новый шаблон
-    context_object_name = 'products' # Имя переменной в шаблоне
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
 
     def get_queryset(self):
-        category_pk = self.kwargs['pk'] # Получаем pk категории из URL
-        # Используем нашу сервисную функцию
+        category_pk = self.kwargs['pk']
         queryset = get_products_by_category(category_pk)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Добавляем объект категории в контекст для отображения заголовка
         category_pk = self.kwargs['pk']
         try:
             context['category'] = Category.objects.get(pk=category_pk)
         except Category.DoesNotExist:
-            context['category'] = None # Если категория не найдена
-        context['categories'] = Category.objects.all() # Все категории для навигации
+            context['category'] = None
+        context['categories'] = Category.objects.all()
         return context
