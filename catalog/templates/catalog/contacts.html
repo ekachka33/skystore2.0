@@ -1,0 +1,62 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Контакты - Catalog{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-4">Контакты</h1>
+    <p class="lead">Свяжитесь с нами удобным для вас способом.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-4">Наши контактные данные</h4>
+                    <table class="table table-striped">
+                        <tr>
+                            <td><strong>Страна</strong></td>
+                            <td>USA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ИНН</strong></td>
+                            <td>91-1144442</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Адрес</strong></td>
+                            <td>Redmond, WA, 98052-6399</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="my-0 font-weight-normal">Свяжитесь с нами</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'catalog:contacts' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Имя</label>
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="Ваш email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Сообщение</label>
+                            <textarea name="message" class="form-control" id="message" placeholder="Ваше сообщение" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-primary w-100">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

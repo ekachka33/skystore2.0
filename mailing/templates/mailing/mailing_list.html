@@ -1,0 +1,44 @@
+{# mailing/templates/mailing/mailing_list.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}Мои рассылки{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Мои рассылки</h1>
+    <a href="{% url 'mailing:mailing_create' %}" class="btn btn-primary mb-3">Создать новую рассылку</a>
+
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if mailings %}
+    <div class="list-group">
+        {% for mailing in mailings %}
+        <a href="{% url 'mailing:mailing_detail' pk=mailing.pk %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    Рассылка: {{ mailing.message.subject|default:"Без темы" }} (Статус: {{ mailing.get_status_display }})
+                </h5>
+                <small class="text-muted">Владелец: {{ mailing.owner.email }}</small>
+            </div>
+            <p class="mb-1">От: {{ mailing.first_send_time|date:"d M Y H:i" }} до: {{ mailing.end_time|date:"d M Y H:i" }}</p>
+            <p class="mb-1 text-muted">Получателей: {{ mailing.recipients.count }}</p>
+            <div class="d-flex justify-content-end mt-2">
+                <a href="{% url 'mailing:mailing_update' pk=mailing.pk %}" class="btn btn-sm btn-outline-warning me-2">Редактировать</a>
+                <a href="{% url 'mailing:mailing_delete' pk=mailing.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        У вас пока нет рассылок. Создайте первую!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

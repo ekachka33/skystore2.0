@@ -1,0 +1,18 @@
+{# mailing/templates/mailing/message_detail.html #}
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ message.subject }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">{{ message.subject }}</h1>
+    <p class="lead">{{ message.body }}</p>
+    <p class="text-muted">Владелец: {{ message.owner.email }}</p>
+
+    <div class="mt-4">
+        <a href="{% url 'mailing:message_update' pk=message.pk %}" class="btn btn-warning me-2">Редактировать</a>
+        <a href="{% url 'mailing:message_delete' pk=message.pk %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'mailing:message_list' %}" class="btn btn-secondary ms-2">К списку сообщений</a>
+    </div>
+</div>
+{% endblock %}

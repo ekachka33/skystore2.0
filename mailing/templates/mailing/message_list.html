@@ -1,0 +1,42 @@
+{# mailing/templates/mailing/message_list.html #}
+{% extends 'catalog/base.html' %} {# Используем базовый шаблон #}
+
+{% block title %}Мои сообщения{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Мои сообщения</h1>
+    <a href="{% url 'mailing:message_create' %}" class="btn btn-primary mb-3">Создать новое сообщение</a>
+
+    {# Отображение сообщений Django (success/error) #}
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if messages %} {# Здесь 'messages' - это переменная контекста из MessageListView #}
+    <div class="list-group">
+        {% for message in messages %}
+        <a href="{% url 'mailing:message_detail' pk=message.pk %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ message.subject }}</h5>
+                <small class="text-muted">Владелец: {{ message.owner.email }}</small>
+            </div>
+            <p class="mb-1">{{ message.body|truncatechars:100 }}</p>
+            <div class="d-flex justify-content-end mt-2">
+                <a href="{% url 'mailing:message_update' pk=message.pk %}" class="btn btn-sm btn-outline-warning me-2">Редактировать</a>
+                <a href="{% url 'mailing:message_delete' pk=message.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        У вас пока нет сообщений. Создайте первое!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

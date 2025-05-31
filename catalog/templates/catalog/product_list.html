@@ -1,0 +1,72 @@
+{# catalog/templates/catalog/product_list.html #}
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+
+{% block title %}Список товаров{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Список товаров</h1>
+
+    {# Блок для фильтрации по категориям - ДОБАВЛЕН ДЛЯ ТЕСТИРОВАНИЯ #}
+    <div class="mb-4">
+        <h3>Фильтр по категориям:</h3>
+        <ul class="list-group list-group-horizontal flex-wrap"> {# Используем Bootstrap для горизонтального списка #}
+            <li class="list-group-item"><a href="{% url 'catalog:product_list' %}" class="text-decoration-none">Все продукты</a></li>
+            {% for category in categories %} {# Здесь мы используем переменную 'categories' #}
+            <li class="list-group-item">
+                <a href="{% url 'catalog:products_by_category' pk=category.pk %}" class="text-decoration-none">{{ category.name }}</a>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted">Категорий пока нет. Добавьте их в админке!</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {# КОНЕЦ БЛОКА ДЛЯ ТЕСТИРОВАНИЯ #}
+
+    <div class="row">
+        {% for product in page_obj %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">
+                    {% else %}
+                        <img src="{% static 'default-image.jpg' %}" alt="Нет изображения" class="img-fluid mb-3">
+                    {% endif %}
+                    <h1 class="card-title pricing-card-title">{{ product.price }}₽</h1>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text text-muted">Категория: {{ product.category.name }}</p> {# Добавил отображение категории здесь #}
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-lg btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>Нет доступных продуктов.</p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

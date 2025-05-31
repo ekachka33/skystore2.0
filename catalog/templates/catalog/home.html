@@ -1,0 +1,59 @@
+{# catalog/templates/catalog/home.html #}
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Добро пожаловать в сервис управления рассылками!</h1>
+
+    {# Блок статистики рассылок #}
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Всего рассылок</h4>
+                <p class="display-4 text-primary">{{ total_mailings }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Активных рассылок</h4>
+                <p class="display-4 text-success">{{ active_mailings }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-3">
+                <h4 class="card-title">Уникальных получателей</h4>
+                <p class="display-4 text-info">{{ unique_recipients_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-4">Последние продукты (из каталога)</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in latest_products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'default-image.jpg' %}" class="card-img-top" alt="Нет изображения" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text text-muted">Категория: {{ product.category.name }}</p>
+                    <h4 class="card-text text-primary">{{ product.price }}₽</h4>
+                    <a href="{% url 'catalog:product_detail' pk=product.pk %}" class="btn btn-primary mt-2">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="alert alert-info">Нет доступных продуктов.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

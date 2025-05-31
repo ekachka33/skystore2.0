@@ -1,0 +1,22 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Добавить товар{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Добавить новый товар</h1>
+   <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Добавить товар</button>
+</form>
+    <div>
+        {% if form.image.errors %}
+            <div class="alert alert-danger">
+                {{ form.image.errors }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
